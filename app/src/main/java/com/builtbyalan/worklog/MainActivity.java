@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        projects = new String[] {"CaseAide® Note", "Personal Website"};
+        projects = new String[] {"CaseAide® Note", "Personal Website", "Worklog"};
 
         mRecyclerView = findViewById(R.id.recyclerview_projects_list);
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -34,40 +34,83 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.ViewHolder> {
+    public class ProjectListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+        static final int VIEW_TYPE_HEADER = 0;
+        static final int VIEW_TYPE_PROJECT_ENTRY = 1;
+
         private String[] mProjects;
 
         ProjectListAdapter(String[] projects) {
             mProjects = projects;
         }
 
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = getLayoutInflater().inflate(R.layout.item_projects, parent, false);
-
-            return new ViewHolder(itemView);
+        String getProject(int position) {
+            return mProjects[position - 1];
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
-            String project = mProjects[position];
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            switch (viewType) {
+                case VIEW_TYPE_HEADER:
+                    View headerView = getLayoutInflater().inflate(R.layout.item_header_projects, parent, false);
+                    return new ProjectHeaderViewHolder(headerView);
+                case VIEW_TYPE_PROJECT_ENTRY:
+                    View entryView = getLayoutInflater().inflate(R.layout.item_entry_projects, parent, false);
+                    return new ProjectEntryViewHolder(entryView);
+                default:
+                    return null;
+            }
+        }
 
-            holder.mTextView.setText(project);
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            switch (holder.getItemViewType()) {
+                case VIEW_TYPE_HEADER:
+                    ProjectHeaderViewHolder headerVH = (ProjectHeaderViewHolder) holder;
+                    headerVH.mHeaderTextView.setText("PROJECTS");
+
+                    break;
+                case VIEW_TYPE_PROJECT_ENTRY:
+                    ProjectEntryViewHolder entryVH = (ProjectEntryViewHolder) holder;
+                    String projectTitle = getProject(position);
+
+                    entryVH.mTitleTextView.setText(projectTitle);
+
+                    break;
+            }
         }
 
         @Override
         public int getItemCount() {
-            return mProjects.length;
+            return mProjects.length + 1;
         }
 
+        @Override
+        public int getItemViewType(int position) {
+            if (position == 0) {
+                return VIEW_TYPE_HEADER;
+            } else {
+                return VIEW_TYPE_PROJECT_ENTRY;
+            }
+        }
 
-        class ViewHolder extends RecyclerView.ViewHolder {
-            TextView mTextView;
+        class ProjectHeaderViewHolder extends RecyclerView.ViewHolder {
+            TextView mHeaderTextView;
 
-            ViewHolder(View itemView) {
+            ProjectHeaderViewHolder(View headerView) {
+                super(headerView);
+
+                mHeaderTextView = (TextView) headerView;
+            }
+
+        }
+        class ProjectEntryViewHolder extends RecyclerView.ViewHolder {
+            TextView mTitleTextView;
+
+            ProjectEntryViewHolder(View itemView) {
                 super(itemView);
 
-                mTextView = (TextView) itemView;
+                mTitleTextView = (TextView) itemView;
             }
         }
     }
