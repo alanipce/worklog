@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Worklog</string>
+    <string name="all_add_project">Add Project</string>
+    <string name="all_project_name_label">Name</string>
+    <string name="all_project_description_label">Project description</string>
+    <string name="all_cancel_action">Cancel</string>
+    <string name="add_project_dialog_submit">Setup Project</string>
 </resources>
