@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "995363693406",
+    "firebase_url": "https://worklog-6845e.firebaseio.com",
+    "project_id": "worklog-6845e",
+    "storage_bucket": "worklog-6845e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:995363693406:android:d72b151adc37edd7",
+        "android_client_info": {
+          "package_name": "com.builtbyalan.worklog"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "995363693406-d9150bmbda6qp8gvegm05o61a31do78a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBk8hq2y04dAepnh1vQmhyzsNk-xbcu-lA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
