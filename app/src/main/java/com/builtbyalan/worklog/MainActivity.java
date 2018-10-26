@@ -94,6 +94,9 @@ public class MainActivity extends AppCompatActivity
         Log.d(TAG, "Project " + project.getTitle() + " clicked! with key " + key);
 
         Intent logWorkIntent = new Intent(this, LogWorkActivity.class);
+        logWorkIntent.putExtra(LogWorkActivity.EXTRA_PROJECT_KEY, key);
+        logWorkIntent.putExtra(LogWorkActivity.EXTRA_PROJECT_DATA, project);
+
         startActivity(logWorkIntent);
     }
 

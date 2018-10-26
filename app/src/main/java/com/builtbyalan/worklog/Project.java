@@ -1,6 +1,9 @@
 package com.builtbyalan.worklog;
 
-public class Project {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Project implements Parcelable {
     private String title;
     private String description;
 
@@ -28,5 +31,34 @@ public class Project {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+
+    public Project(Parcel in) {
+        title = in.readString();
+        description = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(description);
+    }
+
+    public static final Parcelable.Creator<Project> CREATOR = new Parcelable.Creator<Project>() {
+        @Override
+        public Project createFromParcel(Parcel source) {
+            return new Project(source);
+        }
+
+        @Override
+        public Project[] newArray(int size) {
+            return new Project[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 }

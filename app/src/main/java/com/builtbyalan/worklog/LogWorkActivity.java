@@ -7,11 +7,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 public class LogWorkActivity extends AppCompatActivity {
+    public static final String EXTRA_PROJECT_DATA = "worklog.intent.extra.projectdata";
+    public static final String EXTRA_PROJECT_KEY = "worklog.intent.extra.projectkey";
+
+    private Project mCurrentProject;
+    private String mFirebaseProjectKey;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_log_work);
+
+        mCurrentProject = getIntent().getParcelableExtra(EXTRA_PROJECT_DATA);
+        mFirebaseProjectKey = getIntent().getStringExtra(EXTRA_PROJECT_KEY);
+
+        getSupportActionBar().setTitle(mCurrentProject.getTitle());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
