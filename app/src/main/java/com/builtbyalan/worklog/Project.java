@@ -8,8 +8,7 @@ public class Project implements Parcelable {
     private String description;
 
     public Project() {
-        title = "";
-        description = "";
+        this("", "");
     }
 
     public Project(String title, String description) {

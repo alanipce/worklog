@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity
     public static final String TAG = MainActivity.class.getSimpleName();
 
     private Map<Project, String> mProjects;
-    private ProjectValueEventListener mOnProjectsChangeListener = new ProjectValueEventListener();
 
     private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     private DatabaseReference mProjectsRef = mRootRef.child("projects");
@@ -100,7 +99,7 @@ public class MainActivity extends AppCompatActivity
         startActivity(logWorkIntent);
     }
 
-    public class ProjectValueEventListener implements ValueEventListener {
+    private ValueEventListener mOnProjectsChangeListener = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             mProjects.clear();
@@ -118,6 +117,6 @@ public class MainActivity extends AppCompatActivity
         public void onCancelled(@NonNull DatabaseError databaseError) {
             Log.d(TAG, "Failed to read projects.", databaseError.toException());
         }
-    }
+    };
 
 }
