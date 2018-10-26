@@ -1,5 +1,6 @@
 package com.builtbyalan.worklog;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -15,14 +16,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
                             implements ProjectListAdapter.ProjectListListener, AddProjectDialogFragment.AddProjectDialogListener {
 
     public static final String TAG = MainActivity.class.getSimpleName();
 
-    private List<Project> mProjects;
+    private Map<Project, String> mProjects;
     private ProjectValueEventListener mOnProjectsChangeListener = new ProjectValueEventListener();
 
     private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
@@ -38,11 +41,11 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mProjects = new ArrayList<>();
+        mProjects = new HashMap<>();
 
         mRecyclerView = findViewById(R.id.recyclerview_projects_list);
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mAdapter = new ProjectListAdapter(mProjects);
+        mAdapter = new ProjectListAdapter(getProjectList());
         mAdapter.addEventListener(this);
 
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -63,6 +66,13 @@ public class MainActivity extends AppCompatActivity
         mProjectsRef.removeEventListener(mOnProjectsChangeListener);
     }
 
+    private void updateProjectAdapterDatasource() {
+        mAdapter.refresh(getProjectList());
+    }
+
+    private List<Project> getProjectList() {
+        return new ArrayList<>(mProjects.keySet());
+    }
     @Override
     public void onRequestNewProject(AddProjectDialogFragment fragment, String projectTitle, String projectDescription) {
         Project newProject = new Project(projectTitle, projectDescription);
@@ -79,7 +89,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onProjectClick(ProjectListAdapter adapter, Project project) {
-        Log.d(TAG, "Project " + project.getTitle() + " clicked!");
+        String key = mProjects.get(project);
+
+        Log.d(TAG, "Project " + project.getTitle() + " clicked! with key " + key);
+
+        Intent logWorkIntent = new Intent(this, LogWorkActivity.class);
+        startActivity(logWorkIntent);
     }
 
     public class ProjectValueEventListener implements ValueEventListener {
@@ -89,10 +104,11 @@ public class MainActivity extends AppCompatActivity
 
             for (DataSnapshot projectSnapshot: dataSnapshot.getChildren()) {
                 Project p = projectSnapshot.getValue(Project.class);
-                mProjects.add(p);
+                String key = projectSnapshot.getKey();
+                mProjects.put(p, key);
             }
 
-            mAdapter.notifyDataSetChanged();
+            updateProjectAdapterDatasource();
         }
 
         @Override

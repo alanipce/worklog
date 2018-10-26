@@ -20,6 +20,11 @@ public class ProjectListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         mProjects = projects;
     }
 
+    public void refresh(List<Project> projects) {
+        mProjects = projects;
+        notifyDataSetChanged();
+    }
+
     public void addEventListener(ProjectListListener listener) {
         mListener = listener;
     }
