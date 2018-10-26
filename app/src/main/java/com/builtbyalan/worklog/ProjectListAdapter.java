@@ -59,9 +59,10 @@ public class ProjectListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 break;
             case VIEW_TYPE_PROJECT_ENTRY:
                 ProjectEntryViewHolder entryVH = (ProjectEntryViewHolder) holder;
-                String projectTitle = getProject(position).getTitle();
+                Project project = getProject(position);
 
-                entryVH.mTitleTextView.setText(projectTitle);
+                entryVH.mTitleTextView.setText(project.getTitle());
+                entryVH.mDescriptionTextView.setText(project.getDescription());
 
                 break;
         }
@@ -99,11 +100,13 @@ public class ProjectListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
     class ProjectEntryViewHolder extends RecyclerView.ViewHolder {
         TextView mTitleTextView;
+        TextView mDescriptionTextView;
 
         ProjectEntryViewHolder(View itemView) {
             super(itemView);
 
-            mTitleTextView = (TextView) itemView;
+            mTitleTextView = itemView.findViewById(R.id.text_project_entry_title);
+            mDescriptionTextView = itemView.findViewById(R.id.text_project_entry_description);
         }
     }
 }
