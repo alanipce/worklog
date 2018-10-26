@@ -59,10 +59,16 @@ public class ProjectListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 break;
             case VIEW_TYPE_PROJECT_ENTRY:
                 ProjectEntryViewHolder entryVH = (ProjectEntryViewHolder) holder;
-                Project project = getProject(position);
+                final Project project = getProject(position);
 
                 entryVH.mTitleTextView.setText(project.getTitle());
                 entryVH.mDescriptionTextView.setText(project.getDescription());
+                entryVH.mContainerView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mListener.onProjectClick(ProjectListAdapter.this, project);
+                    }
+                });
 
                 break;
         }
@@ -84,6 +90,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public interface ProjectListListener {
         public void onAddProjectClick(ProjectListAdapter adapter);
+        public void onProjectClick(ProjectListAdapter adapter, Project project);
     }
 
     class ProjectHeaderViewHolder extends RecyclerView.ViewHolder {
@@ -101,12 +108,14 @@ public class ProjectListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     class ProjectEntryViewHolder extends RecyclerView.ViewHolder {
         TextView mTitleTextView;
         TextView mDescriptionTextView;
+        ViewGroup mContainerView;
 
         ProjectEntryViewHolder(View itemView) {
             super(itemView);
 
-            mTitleTextView = itemView.findViewById(R.id.text_project_entry_title);
-            mDescriptionTextView = itemView.findViewById(R.id.text_project_entry_description);
+            mContainerView = itemView.findViewById(R.id.layout_project_entry_container);
+            mTitleTextView = mContainerView.findViewById(R.id.text_project_entry_title);
+            mDescriptionTextView = mContainerView.findViewById(R.id.text_project_entry_description);
         }
     }
 }

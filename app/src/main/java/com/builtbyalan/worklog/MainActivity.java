@@ -77,6 +77,11 @@ public class MainActivity extends AppCompatActivity
         fragment.show(getFragmentManager(), "addproject");
     }
 
+    @Override
+    public void onProjectClick(ProjectListAdapter adapter, Project project) {
+        Log.d(TAG, "Project " + project.getTitle() + " clicked!");
+    }
+
     public class ProjectValueEventListener implements ValueEventListener {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
