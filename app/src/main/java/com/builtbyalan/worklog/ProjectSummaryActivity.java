@@ -17,8 +17,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LogWorkActivity extends AppCompatActivity {
-    public static final String TAG = LogWorkActivity.class.getSimpleName();
+public class ProjectSummaryActivity extends AppCompatActivity {
+    public static final String TAG = ProjectSummaryActivity.class.getSimpleName();
 
     public static final String EXTRA_PROJECT_DATA = "worklog.intent.extra.projectdata";
     public static final String EXTRA_PROJECT_KEY = "worklog.intent.extra.projectkey";
@@ -34,7 +34,7 @@ public class LogWorkActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_log_work);
+        setContentView(R.layout.activity_project_summary);
 
         mWorkEntries = new ArrayList<>();
         mCurrentProject = getIntent().getParcelableExtra(EXTRA_PROJECT_DATA);

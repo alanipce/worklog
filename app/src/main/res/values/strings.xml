@@ -6,4 +6,14 @@
     <string name="all_cancel_action">Cancel</string>
     <string name="add_project_dialog_submit">Setup Project</string>
     <string name="all_chevron_right_content_description">Decorative chevron arrow</string>
+    <string name="all_task_label">Task</string>
+    <string name="all_start_date_label">Start Date</string>
+    <string name="all_end_date_label">End Date</string>
+    <string name="all_notes_label">Notes</string>
+    <string name="add_work_entry_notes_hint">Write notes describing the result of the time spent on task</string>
+    <string name="add_work_entry_activity_title">Log Work Entry</string>
+    <string name="add_work_entry_menuitem_create">Create</string>
+    <string name="all_update_button_label">Change</string>
+    <string name="add_work_entry_endtime_label">End Time</string>
+    <string name="add_work_entry_starttime_label">Start Time</string>
 </resources>

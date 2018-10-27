@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp">
+
+    <TextView
+        android:id="@+id/text_log_work_entry_endtime_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/add_work_entry_endtime_label"
+        app:layout_constraintStart_toStartOf="@+id/edittext_log_work_entry_task"
+        app:layout_constraintTop_toBottomOf="@+id/text_log_work_entry_starttime_value" />
+
+    <TextView
+        android:id="@+id/text_log_work_entry_endtime_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/button_log_work_entry_change_endtime"
+        app:layout_constraintStart_toStartOf="@+id/text_log_work_entry_endtime_label"
+        app:layout_constraintTop_toBottomOf="@+id/text_log_work_entry_endtime_label"
+        tools:text="Today" />
+
+    <Button
+        android:id="@+id/button_log_work_entry_change_endtime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/all_update_button_label"
+        app:layout_constraintEnd_toEndOf="@+id/edittext_log_work_entry_task"
+        app:layout_constraintTop_toTopOf="@+id/text_log_work_entry_endtime_label" />
+
+    <EditText
+        android:id="@+id/edittext_log_work_entry_task"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:hint="@string/all_task_label"
+        android:inputType="text|textShortMessage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edittext_log_work_entry_notes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:hint="@string/add_work_entry_notes_hint"
+        android:inputType="textAutoCorrect|textAutoComplete|textMultiLine"
+        android:lines="5"
+        app:layout_constraintEnd_toEndOf="@+id/edittext_log_work_entry_task"
+        app:layout_constraintStart_toStartOf="@+id/edittext_log_work_entry_task"
+        app:layout_constraintTop_toBottomOf="@+id/text_log_work_entry_endtime_value" />
+
+    <TextView
+        android:id="@+id/text_log_work_entry_starttime_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="@string/add_work_entry_starttime_label"
+        app:layout_constraintStart_toStartOf="@+id/edittext_log_work_entry_task"
+        app:layout_constraintTop_toBottomOf="@+id/edittext_log_work_entry_task" />
+
+    <TextView
+        android:id="@+id/text_log_work_entry_starttime_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/button_log_work_entry_change_starttime"
+        app:layout_constraintStart_toStartOf="@+id/text_log_work_entry_starttime_label"
+        app:layout_constraintTop_toBottomOf="@+id/text_log_work_entry_starttime_label"
+        tools:text="Today" />
+
+    <Button
+        android:id="@+id/button_log_work_entry_change_starttime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/all_update_button_label"
+        app:layout_constraintEnd_toEndOf="@+id/edittext_log_work_entry_task"
+        app:layout_constraintTop_toTopOf="@+id/text_log_work_entry_starttime_label" />
+</android.support.constraint.ConstraintLayout>
