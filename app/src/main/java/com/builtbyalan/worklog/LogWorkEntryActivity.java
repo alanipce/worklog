@@ -1,6 +1,5 @@
 package com.builtbyalan.worklog;
 
-import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -76,23 +74,44 @@ public class LogWorkEntryActivity extends AppCompatActivity {
     private void registerDateTimeWidget(Button button, final TextView textView, final Calendar dateState) {
         textView.setText(formatDateTime(dateState));
 
-        final TimePickerDialog dialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                dateState.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                dateState.set(Calendar.MINUTE, minute);
-
-                textView.setText(formatDateTime(dateState));
-            }
-        }, dateState.get(Calendar.HOUR_OF_DAY), dateState.get(Calendar.MINUTE), false);
-
-
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.show();
+                DateTimePickerDialogFragment dateTimeDialog = DateTimePickerDialogFragment.withDefaultDate(dateState);
+                dateTimeDialog.setOnDateTimeSetListener(new DateTimePickerDialogFragment.OnDateTimeSetListener() {
+                    @Override
+                    public void onDateTimeSet(DateTimePickerDialogFragment dialogFragment, int year, int monthOfYear, int dayOfMonth, int hourOfDay, int minute) {
+                        dateState.set(Calendar.YEAR, year);
+                        dateState.set(Calendar.MONTH, monthOfYear);
+                        dateState.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        dateState.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        dateState.set(Calendar.MINUTE, minute);
+
+                        textView.setText(formatDateTime(dateState));
+                    }
+                });
+
+                dateTimeDialog.show(getFragmentManager(), "datetimedialog");
             }
         });
+//        final TimePickerDialog dialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+//            @Override
+//            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+//                dateState.set(Calendar.HOUR_OF_DAY, hourOfDay);
+//                dateState.set(Calendar.MINUTE, minute);
+//
+//                textView.setText(formatDateTime(dateState));
+//            }
+//        }, dateState.get(Calendar.HOUR_OF_DAY), dateState.get(Calendar.MINUTE), false);
+//
+//
+//
+//        button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                dialog.show();
+//            }
+//        });
     }
 
     private String formatDateTime(Calendar calendarDate) {

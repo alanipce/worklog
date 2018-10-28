@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/layout_datetime_picker_dialog_tabs_container"
+        android:layout_width="match_parent"
+        android:layout_height="60dp" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="250dp">
+        <LinearLayout
+            android:id="@+id/layout_datetime_picker_dialog_date_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@android:color/white">
+            <DatePicker
+                android:id="@+id/datepicker_datetime_picker_dialog_selector"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:theme="@android:style/Theme.Holo.Light"
+                android:calendarViewShown="false"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/layout_datetime_picker_dialog_time_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@android:color/white">
+            <TimePicker
+                android:id="@+id/timepicker_datetime_picker_dialog_selector"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:theme="@android:style/Theme.Holo.Light"/>
+        </LinearLayout>
+    </FrameLayout>
+</LinearLayout>
