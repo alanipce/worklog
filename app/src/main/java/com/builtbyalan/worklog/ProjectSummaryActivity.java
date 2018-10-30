@@ -1,5 +1,6 @@
 package com.builtbyalan.worklog;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,6 +8,7 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,8 +22,8 @@ import java.util.List;
 public class ProjectSummaryActivity extends AppCompatActivity {
     public static final String TAG = ProjectSummaryActivity.class.getSimpleName();
 
-    public static final String EXTRA_PROJECT_DATA = "worklog.intent.extra.projectdata";
-    public static final String EXTRA_PROJECT_KEY = "worklog.intent.extra.projectkey";
+    public static final String EXTRA_PROJECT_DATA = "worklog.projectsummary.intent.extra.projectdata";
+    public static final String EXTRA_PROJECT_FIREBASE_KEY = "worklog.projectsummary.intent.extra.projectfirebasekey";
 
     private List<WorkEntry> mWorkEntries;
     private Project mCurrentProject;
@@ -38,10 +40,19 @@ public class ProjectSummaryActivity extends AppCompatActivity {
 
         mWorkEntries = new ArrayList<>();
         mCurrentProject = getIntent().getParcelableExtra(EXTRA_PROJECT_DATA);
-        mFirebaseProjectKey = getIntent().getStringExtra(EXTRA_PROJECT_KEY);
+        mFirebaseProjectKey = getIntent().getStringExtra(EXTRA_PROJECT_FIREBASE_KEY);
 
         getSupportActionBar().setTitle(mCurrentProject.getTitle());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        findViewById(R.id.button_project_summary_log_entry_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent logWorkEntryIntent = new Intent(ProjectSummaryActivity.this, LogWorkEntryActivity.class);
+                logWorkEntryIntent.putExtra(LogWorkEntryActivity.EXTRA_PROJECT_FIREBASE_KEY, mFirebaseProjectKey);
+                startActivity(logWorkEntryIntent);
+            }
+        });
     }
 
     @Override

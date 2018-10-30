@@ -92,15 +92,11 @@ public class MainActivity extends AppCompatActivity
 
         Log.d(TAG, "Project " + project.getTitle() + " clicked! with key " + key);
 
-//        Intent logWorkIntent = new Intent(this, ProjectSummaryActivity.class);
-//        logWorkIntent.putExtra(ProjectSummaryActivity.EXTRA_PROJECT_KEY, key);
-//        logWorkIntent.putExtra(ProjectSummaryActivity.EXTRA_PROJECT_DATA, project);
-//
-//        startActivity(logWorkIntent);
+        Intent projectSummaryIntent = new Intent(this, ProjectSummaryActivity.class);
+        projectSummaryIntent.putExtra(ProjectSummaryActivity.EXTRA_PROJECT_FIREBASE_KEY, key);
+        projectSummaryIntent.putExtra(ProjectSummaryActivity.EXTRA_PROJECT_DATA, project);
 
-
-        Intent logWorkEntryIntent = new Intent(this, LogWorkEntryActivity.class);
-        startActivity(logWorkEntryIntent);
+        startActivity(projectSummaryIntent);
     }
 
     private ValueEventListener mOnProjectsChangeListener = new ValueEventListener() {

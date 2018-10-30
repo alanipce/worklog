@@ -19,7 +19,8 @@
         <activity android:name=".ProjectSummaryActivity"
             android:parentActivityName=".MainActivity"/>
         <activity android:name=".LogWorkEntryActivity"
-            android:label="@string/add_work_entry_activity_title"/>
+            android:label="@string/add_work_entry_activity_title"
+            android:parentActivityName=".ProjectSummaryActivity"/>
     </application>
 
 </manifest>
