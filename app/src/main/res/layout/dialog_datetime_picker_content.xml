@@ -22,7 +22,7 @@
                 android:id="@+id/datepicker_datetime_picker_dialog_selector"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:theme="@android:style/Theme.Holo.Light"
+                android:datePickerMode="spinner"
                 android:calendarViewShown="false"/>
         </LinearLayout>
         <LinearLayout
@@ -35,7 +35,7 @@
                 android:id="@+id/timepicker_datetime_picker_dialog_selector"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:theme="@android:style/Theme.Holo.Light"/>
+                android:timePickerMode="spinner" />
         </LinearLayout>
     </FrameLayout>
 </LinearLayout>
