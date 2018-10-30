@@ -37,10 +37,10 @@ public class ProjectListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case VIEW_TYPE_HEADER:
-                View headerView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_header_projects, parent, false);
+                View headerView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_project_header, parent, false);
                 return new ProjectHeaderViewHolder(headerView);
             case VIEW_TYPE_PROJECT_ENTRY:
-                View entryView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_entry_projects, parent, false);
+                View entryView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_project_entry, parent, false);
                 return new ProjectEntryViewHolder(entryView);
             default:
                 return null;
