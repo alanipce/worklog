@@ -39,6 +39,7 @@ public class ProjectSummaryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_project_summary);
 
         mWorkEntries = new ArrayList<>();
+
         mCurrentProject = getIntent().getParcelableExtra(EXTRA_PROJECT_DATA);
         mFirebaseProjectKey = getIntent().getStringExtra(EXTRA_PROJECT_FIREBASE_KEY);
 
