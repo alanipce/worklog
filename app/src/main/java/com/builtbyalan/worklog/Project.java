@@ -6,6 +6,7 @@ import android.os.Parcelable;
 public class Project implements Parcelable {
     private String title;
     private String description;
+    private String identifier;
 
     public Project() {
         this("", "");
@@ -14,6 +15,7 @@ public class Project implements Parcelable {
     public Project(String title, String description) {
         this.title = title;
         this.description = description;
+        this.identifier = "";
     }
 
     public String getTitle() {
@@ -32,16 +34,25 @@ public class Project implements Parcelable {
         this.description = description;
     }
 
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
 
     public Project(Parcel in) {
         title = in.readString();
         description = in.readString();
+        identifier = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
         dest.writeString(description);
+        dest.writeString(identifier);
     }
 
     public static final Parcelable.Creator<Project> CREATOR = new Parcelable.Creator<Project>() {

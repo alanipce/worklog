@@ -13,12 +13,12 @@
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:textAllCaps="true"
-        tools:text="Projects"/>
+        tools:text="Title"/>
 
     <Button
         android:id="@+id/button_project_header_action"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/all_add_project" />
+        tools:text="Action" />
 </LinearLayout>

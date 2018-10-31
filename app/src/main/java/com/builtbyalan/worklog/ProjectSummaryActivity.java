@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -24,6 +23,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.luizgrp.sectionedrecyclerviewadapter.Section;
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
+import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
+
 public class ProjectSummaryActivity extends AppCompatActivity {
     public static final String TAG = ProjectSummaryActivity.class.getSimpleName();
 
@@ -32,9 +36,9 @@ public class ProjectSummaryActivity extends AppCompatActivity {
 
     private List<WorkEntry> mWorkEntries;
     private Project mCurrentProject;
-    private String mFirebaseProjectKey;
 
     private RecyclerView mRecyclerView;
+    private SectionedRecyclerViewAdapter mSectionedAdapter;
 
 
     private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
@@ -47,25 +51,19 @@ public class ProjectSummaryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_project_summary);
 
         mCurrentProject = getIntent().getParcelableExtra(EXTRA_PROJECT_DATA);
-        mFirebaseProjectKey = getIntent().getStringExtra(EXTRA_PROJECT_FIREBASE_KEY);
 
         mWorkEntries = new ArrayList<>();
-        mWorkEntriesQuery = mRootRef.child("workentries").orderByChild("projectIdentifier").equalTo(mFirebaseProjectKey);
+        mWorkEntriesQuery = mRootRef.child("workentries").orderByChild("projectIdentifier").equalTo(mCurrentProject.getIdentifier());
 
         getSupportActionBar().setTitle(mCurrentProject.getTitle());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        mSectionedAdapter = new SectionedRecyclerViewAdapter();
+        mSectionedAdapter.addSection(new WorkEntrySection());
+
         mRecyclerView = findViewById(R.id.recyclerview_work_entry_list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        mRecyclerView.setAdapter(mWorkEntryAdapter);
-//        findViewById(R.id.button_project_summary_log_entry_button).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent logWorkEntryIntent = new Intent(ProjectSummaryActivity.this, LogWorkEntryActivity.class);
-//                logWorkEntryIntent.putExtra(LogWorkEntryActivity.EXTRA_PROJECT_FIREBASE_KEY, mFirebaseProjectKey);
-//                startActivity(logWorkEntryIntent);
-//            }
-//        });
+        mRecyclerView.setAdapter(mSectionedAdapter);
     }
 
     @Override
@@ -94,6 +92,12 @@ public class ProjectSummaryActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void logNewWorkEntry() {
+        Intent logWorkEntryIntent = new Intent(ProjectSummaryActivity.this, LogWorkEntryActivity.class);
+        logWorkEntryIntent.putExtra(LogWorkEntryActivity.EXTRA_PROJECT_FIREBASE_KEY, mCurrentProject.getIdentifier());
+        startActivity(logWorkEntryIntent);
+    }
+
     private ValueEventListener mOnChangeWorkEntriesEventListener = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -105,7 +109,7 @@ public class ProjectSummaryActivity extends AppCompatActivity {
                 mWorkEntries.add(work);
             }
 
-            mWorkEntryAdapter.notifyDataSetChanged();
+            mSectionedAdapter.notifyDataSetChanged();
 
         }
 
@@ -116,24 +120,27 @@ public class ProjectSummaryActivity extends AppCompatActivity {
     };
 
 
-    private RecyclerView.Adapter mWorkEntryAdapter = new RecyclerView.Adapter() {
-        class WorkEntryViewHolder extends RecyclerView.ViewHolder {
-            TextView mTitleTextView;
+    class WorkEntrySection extends StatelessSection {
 
-            WorkEntryViewHolder(View itemView) {
-                super(itemView);
-                mTitleTextView = (TextView) itemView;
-            }
+        WorkEntrySection() {
+            super(SectionParameters.builder()
+                    .itemResourceId(R.layout.item_work_entry)
+                    .headerResourceId(R.layout.item_action_header)
+                    .build());
         }
 
         @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View itemView = getLayoutInflater().inflate(R.layout.item_work_entry, parent, false);
-            return new WorkEntryViewHolder(itemView);
+        public int getContentItemsTotal() {
+            return mWorkEntries.size();
         }
 
         @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        public RecyclerView.ViewHolder getItemViewHolder(View view) {
+            return new WorkEntryViewHolder(view);
+        }
+
+        @Override
+        public void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position) {
             WorkEntry entry = mWorkEntries.get(position);
 
             WorkEntryViewHolder vh = (WorkEntryViewHolder) holder;
@@ -141,8 +148,31 @@ public class ProjectSummaryActivity extends AppCompatActivity {
         }
 
         @Override
-        public int getItemCount() {
-            return mWorkEntries.size();
+        public RecyclerView.ViewHolder getHeaderViewHolder(View view) {
+            return new ActionHeaderViewHolder(view);
         }
-    };
+
+        @Override
+        public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
+            ActionHeaderViewHolder vh = (ActionHeaderViewHolder) holder;
+            vh.mTitleTextView.setText("Work Entries");
+            vh.mActionButton.setText("Log Entry");
+            vh.mActionButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    logNewWorkEntry();
+                }
+            });
+
+        }
+    }
+
+    private class WorkEntryViewHolder extends RecyclerView.ViewHolder {
+        TextView mTitleTextView;
+
+        WorkEntryViewHolder(View itemView) {
+            super(itemView);
+            mTitleTextView = (TextView) itemView;
+        }
+    }
 }
