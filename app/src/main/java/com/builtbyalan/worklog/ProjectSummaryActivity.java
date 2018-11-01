@@ -146,7 +146,7 @@ public class ProjectSummaryActivity extends AppCompatActivity {
             WorkEntryViewHolder vh = (WorkEntryViewHolder) holder;
             vh.titleTextView.setText(entry.getTask());
             vh.notesTextView.setText(entry.getNotes());
-            vh.hoursTextView.setText("0:00");
+            vh.hoursTextView.setText(mDateManager.formatElapsedTime(entry.getStartDate(), entry.getEndDate()));
             vh.datesTextView.setText(mDateManager.formatDateRange(entry.getStartDate(), entry.getEndDate()));
         }
 
