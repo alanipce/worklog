@@ -17,7 +17,6 @@ import android.widget.TextView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -29,6 +28,7 @@ public class LogWorkEntryActivity extends AppCompatActivity {
     private DatabaseReference mWorkEntriesRef = FirebaseDatabase.getInstance().getReference().child("workentries");
     private String mFirebaseProjectKey;
 
+    private DateManager mDateManager = new DateManager();
     private Calendar mStartTime;
     private Calendar mEndTime;
 
@@ -135,14 +135,11 @@ public class LogWorkEntryActivity extends AppCompatActivity {
 
     private String formatDateTime(Calendar calendarDate) {
         if (DateUtils.isToday(calendarDate.getTimeInMillis())) {
-            SimpleDateFormat formatter = new SimpleDateFormat("h:mm a");
-            String formattedTime = formatter.format(calendarDate.getTime());
+            String formattedTime = mDateManager.formatTime(calendarDate.getTime());
 
             return "Today " + formattedTime;
         } else {
-            SimpleDateFormat formatter = new SimpleDateFormat("MMM d h:mm a");
-
-            return formatter.format(calendarDate.getTime());
+            return mDateManager.formatDateTime(calendarDate.getTime());
         }
 
     }

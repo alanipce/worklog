@@ -23,7 +23,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.luizgrp.sectionedrecyclerviewadapter.Section;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
@@ -41,6 +40,7 @@ public class ProjectSummaryActivity extends AppCompatActivity {
     private SectionedRecyclerViewAdapter mSectionedAdapter;
 
 
+    private DateManager mDateManager = new DateManager();
     private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     private Query mWorkEntriesQuery;
 
@@ -144,7 +144,10 @@ public class ProjectSummaryActivity extends AppCompatActivity {
             WorkEntry entry = mWorkEntries.get(position);
 
             WorkEntryViewHolder vh = (WorkEntryViewHolder) holder;
-            vh.mTitleTextView.setText(entry.getTask());
+            vh.titleTextView.setText(entry.getTask());
+            vh.notesTextView.setText(entry.getNotes());
+            vh.hoursTextView.setText("0:00");
+            vh.datesTextView.setText(mDateManager.formatDateRange(entry.getStartDate(), entry.getEndDate()));
         }
 
         @Override
@@ -168,11 +171,18 @@ public class ProjectSummaryActivity extends AppCompatActivity {
     }
 
     private class WorkEntryViewHolder extends RecyclerView.ViewHolder {
-        TextView mTitleTextView;
+        TextView titleTextView;
+        TextView notesTextView;
+        TextView datesTextView;
+        TextView hoursTextView;
+
 
         WorkEntryViewHolder(View itemView) {
             super(itemView);
-            mTitleTextView = (TextView) itemView;
+            titleTextView = itemView.findViewById(R.id.text_work_entry_item_title);
+            notesTextView = itemView.findViewById(R.id.text_work_entry_item_notes);
+            datesTextView = itemView.findViewById(R.id.text_work_entry_item_dates);
+            hoursTextView = itemView.findViewById(R.id.text_work_entry_item_hours);
         }
     }
 }
