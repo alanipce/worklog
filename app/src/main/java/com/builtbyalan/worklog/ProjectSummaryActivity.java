@@ -8,6 +8,8 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +25,8 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.Section;
@@ -39,11 +43,11 @@ public class ProjectSummaryActivity extends AppCompatActivity {
     private List<WorkEntry> mWorkEntries;
     private Project mCurrentProject;
     private Timer mProjectTimer;
+    private String mProjectTimerTaskName;
 
     private RecyclerView mRecyclerView;
     private SectionedRecyclerViewAdapter mSectionedAdapter;
     private Section mProjectTimerSection;
-
 
     private DateFormatter mDateFormatter = new DateFormatter();
     private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
@@ -115,7 +119,24 @@ public class ProjectSummaryActivity extends AppCompatActivity {
         mProjectTimer.stop();
 
         Log.d(TAG, "Stopping timer with final time elapsed of: " + mProjectTimer.getTimeElapsed());
-        // send data to the correct method
+        logNewWorkEntry(mProjectTimerTaskName, mProjectTimer.getTimeElapsed());
+    }
+
+    private void logNewWorkEntry(String taskName, long timeWorked) {
+        int secondsWorked = (int) (timeWorked/1000L);
+
+        Calendar now = Calendar.getInstance();
+        Date endTime = now.getTime();
+        now.add(Calendar.SECOND, -secondsWorked);
+        Date startTime = now.getTime();
+
+
+        Intent logWorkEntryIntent = new Intent(ProjectSummaryActivity.this, LogWorkEntryActivity.class);
+        logWorkEntryIntent.putExtra(LogWorkEntryActivity.EXTRA_PROJECT_FIREBASE_KEY, mCurrentProject.getIdentifier());
+        logWorkEntryIntent.putExtra(LogWorkEntryActivity.EXTRA_TASK_NAME, taskName);
+        logWorkEntryIntent.putExtra(LogWorkEntryActivity.EXTRA_START_TIME, startTime);
+        logWorkEntryIntent.putExtra(LogWorkEntryActivity.EXTRA_END_TIME, endTime);
+        startActivity(logWorkEntryIntent);
     }
 
     private void logNewWorkEntry() {
@@ -169,6 +190,8 @@ public class ProjectSummaryActivity extends AppCompatActivity {
         @Override
         public void onBindItemViewHolder(RecyclerView.ViewHolder holder, final int position) {
             ProjectTimerViewHolder vh = (ProjectTimerViewHolder) holder;
+
+            vh.taskTitleEditText.setText(mProjectTimerTaskName);
 
             if (mProjectTimer == null || mProjectTimer.isIdle()) {
                 vh.timerDisplayTextView.setVisibility(View.INVISIBLE);
@@ -254,7 +277,7 @@ public class ProjectSummaryActivity extends AppCompatActivity {
 
     private class ProjectTimerViewHolder extends RecyclerView.ViewHolder {
         TextView titleTextView;
-        EditText taskTitleTextView;
+        EditText taskTitleEditText;
         TextView timerDisplayTextView;
         Button startTimerButton;
         Button stopTimerButton;
@@ -263,10 +286,29 @@ public class ProjectSummaryActivity extends AppCompatActivity {
             super(itemView);
 
             titleTextView = itemView.findViewById(R.id.text_project_timer_title);
-            taskTitleTextView = itemView.findViewById(R.id.edittext_project_timer_task);
+            taskTitleEditText = itemView.findViewById(R.id.edittext_project_timer_task);
             timerDisplayTextView = itemView.findViewById(R.id.text_project_timer_display);
             startTimerButton = itemView.findViewById(R.id.button_project_timer_start);
             stopTimerButton = itemView.findViewById(R.id.button_project_timer_stop);
+
+            taskTitleEditText.addTextChangedListener(new TaskNameEditTextListener());
+        }
+
+        private class TaskNameEditTextListener implements TextWatcher {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mProjectTimerTaskName = s.toString();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
         }
     }
 

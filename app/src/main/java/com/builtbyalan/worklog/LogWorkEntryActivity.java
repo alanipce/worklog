@@ -22,7 +22,12 @@ import java.util.Date;
 
 public class LogWorkEntryActivity extends AppCompatActivity {
     public static final String TAG = LogWorkEntryActivity.class.getSimpleName();
+
     public static final String EXTRA_PROJECT_FIREBASE_KEY = "worklog.logworkentry.intent.extra.projectfirebasekey";
+    public static final String EXTRA_TASK_NAME = "worklog.logworkentry.intent.extra.taskname";
+    public static final String EXTRA_START_TIME = "worklog.logworkentry.intent.extra.starttime";
+    public static final String EXTRA_END_TIME = "worklog.logworkentry.intent.extra.endtime";
+
     public static final int DEFAULT_WORKSESSION_LENGTH_HOURS = 2;
 
     private DatabaseReference mWorkEntriesRef = FirebaseDatabase.getInstance().getReference().child("workentries");
@@ -43,11 +48,25 @@ public class LogWorkEntryActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mFirebaseProjectKey = getIntent().getStringExtra(EXTRA_PROJECT_FIREBASE_KEY);
+
+        // initalize datasources
         mStartTime = Calendar.getInstance();
-        adjustStartTimeBasedOnDefaultTimeWorked(mStartTime);
+
+        if (getIntent().hasExtra(EXTRA_START_TIME)) {
+            Date startTime = (Date) getIntent().getSerializableExtra(EXTRA_START_TIME);
+            mStartTime.setTime(startTime);
+        } else {
+            adjustStartTimeBasedOnDefaultTimeWorked(mStartTime);
+        }
 
         mEndTime = Calendar.getInstance();
 
+        if (getIntent().hasExtra(EXTRA_END_TIME)) {
+            Date endTime = (Date) getIntent().getSerializableExtra(EXTRA_END_TIME);
+            mEndTime.setTime(endTime);
+        }
+
+        // Obtain view handles
         Button updateStartTimeButton = findViewById(R.id.button_log_work_entry_change_starttime);
         TextView startTimeValueTextView = findViewById(R.id.text_log_work_entry_starttime_value);
         Button updateEndTimeButton = findViewById(R.id.button_log_work_entry_change_endtime);
@@ -55,8 +74,14 @@ public class LogWorkEntryActivity extends AppCompatActivity {
         mTaskEditText = findViewById(R.id.edittext_log_work_entry_task);
         mNotesEditText = findViewById(R.id.edittext_log_work_entry_notes);
 
+
+        // update views
         registerDateTimeWidget(updateStartTimeButton, startTimeValueTextView, mStartTime);
         registerDateTimeWidget(updateEndTimeButton, endTimeValueTextView, mEndTime);
+
+        if (getIntent().hasExtra(EXTRA_TASK_NAME)) {
+            mTaskEditText.setText(getIntent().getStringExtra(EXTRA_TASK_NAME));
+        }
     }
 
     @Override
