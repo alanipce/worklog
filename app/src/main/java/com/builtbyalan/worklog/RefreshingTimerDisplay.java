@@ -2,7 +2,6 @@ package com.builtbyalan.worklog;
 
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
 import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
@@ -14,7 +13,7 @@ public class RefreshingTimerDisplay {
     private TextView mDisplayTextView;
     private long mRefreshInterval; // in milliseconds
     private Handler mHandler;
-    private DateManager mDateFormatter;
+    private DateFormatter mDateFormatter;
 
     private static final int MSG = 1;
 
@@ -26,8 +25,8 @@ public class RefreshingTimerDisplay {
         mTimer = timer;
         mDisplayTextView = displayTextView;
         mHandler = new RefreshHandler(this);
-        mDateFormatter = new DateManager();
-        mRefreshInterval = 60000; // once per minute
+        mDateFormatter = new DateFormatter();
+        mRefreshInterval = 1000;
     }
 
     public void beginUpdating(Timer timer, TextView displayTextView) {
@@ -47,7 +46,7 @@ public class RefreshingTimerDisplay {
 
 
     private void updateDisplay() {
-        String formattedElapsedTime = mDateFormatter.formatElapsedTime(mTimer.getTimeElapsed());
+        String formattedElapsedTime = mDateFormatter.formatElapsedTime(mTimer.getTimeElapsed(), true);
 
         mDisplayTextView.setText(formattedElapsedTime);
     }

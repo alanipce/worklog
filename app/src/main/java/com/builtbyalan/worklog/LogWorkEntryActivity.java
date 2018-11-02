@@ -28,7 +28,7 @@ public class LogWorkEntryActivity extends AppCompatActivity {
     private DatabaseReference mWorkEntriesRef = FirebaseDatabase.getInstance().getReference().child("workentries");
     private String mFirebaseProjectKey;
 
-    private DateManager mDateManager = new DateManager();
+    private DateFormatter mDateFormatter = new DateFormatter();
     private Calendar mStartTime;
     private Calendar mEndTime;
 
@@ -135,11 +135,11 @@ public class LogWorkEntryActivity extends AppCompatActivity {
 
     private String formatDateTime(Calendar calendarDate) {
         if (DateUtils.isToday(calendarDate.getTimeInMillis())) {
-            String formattedTime = mDateManager.formatTime(calendarDate.getTime());
+            String formattedTime = mDateFormatter.formatTime(calendarDate.getTime());
 
             return "Today " + formattedTime;
         } else {
-            return mDateManager.formatDateTime(calendarDate.getTime());
+            return mDateFormatter.formatDateTime(calendarDate.getTime());
         }
 
     }

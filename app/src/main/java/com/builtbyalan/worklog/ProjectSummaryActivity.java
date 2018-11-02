@@ -45,7 +45,7 @@ public class ProjectSummaryActivity extends AppCompatActivity {
     private Section mProjectTimerSection;
 
 
-    private DateManager mDateManager = new DateManager();
+    private DateFormatter mDateFormatter = new DateFormatter();
     private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     private Query mWorkEntriesQuery;
 
@@ -228,8 +228,8 @@ public class ProjectSummaryActivity extends AppCompatActivity {
             WorkEntryViewHolder vh = (WorkEntryViewHolder) holder;
             vh.titleTextView.setText(entry.getTask());
             vh.notesTextView.setText(entry.getNotes());
-            vh.hoursTextView.setText(mDateManager.formatElapsedTime(entry.getStartDate(), entry.getEndDate()));
-            vh.datesTextView.setText(mDateManager.formatDateRange(entry.getStartDate(), entry.getEndDate()));
+            vh.hoursTextView.setText(mDateFormatter.formatElapsedTime(entry.getStartDate(), entry.getEndDate(), false));
+            vh.datesTextView.setText(mDateFormatter.formatDateRange(entry.getStartDate(), entry.getEndDate()));
         }
 
         @Override

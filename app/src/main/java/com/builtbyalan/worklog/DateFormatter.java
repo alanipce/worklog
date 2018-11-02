@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 // formats dates using the apps predefined date formats
-public class DateManager {
+public class DateFormatter {
     private static final String DAY_COMPARISON_FORMAT = "yyyyMMdd";
     // access using internal accessor method
     private SimpleDateFormat mSimpleFormatter;
@@ -29,21 +29,27 @@ public class DateManager {
         return getSimpleFormatter(getDateTimePattern()).format(date);
     }
 
-    public String formatElapsedTime(Date start, Date end) {
-        return formatElapsedTime(end.getTime() - start.getTime());
+    public String formatElapsedTime(Date start, Date end, boolean includeSeconds) {
+        return formatElapsedTime(end.getTime() - start.getTime(), includeSeconds);
     }
 
-    public String formatElapsedTime(long millis) {
-        // going to loose time elapsed less than a minute which is ok in this case
-        int minutes = (int) (millis / (1000 * 60));
-        return formatElapsedTime(minutes);
+    public String formatElapsedTime(long millis, boolean includeSeconds) {
+        // going to loose time elapsed less than a second
+        int seconds = (int) (millis / (1000));
+        return formatElapsedTime(seconds, includeSeconds);
     }
 
-    public String formatElapsedTime(int elapsedMinutes) {
-        int hours = elapsedMinutes / 60;
-        int minutes = elapsedMinutes % 60;
 
-        return String.format("%02d:%02d", hours, minutes);
+    public String formatElapsedTime(int seconds, boolean includeSeconds) {
+        int h = seconds / 3600;
+        int m = (seconds % 3600) / 60;
+        int s = (seconds % 3600) % 60;
+
+        if (includeSeconds) {
+            return String.format("%02d:%02d:%02d", h, m, s);
+        }
+
+        return String.format("%02d:%02d", h, m);
     }
 
     public boolean isSameDay(Date left, Date right) {
