@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements AddProjectDialogF
         super.onStart();
 
         mProjectsRef.addValueEventListener(mOnProjectsChangeListener);
-        startActivity(new Intent(this, FakeTimerActivity.class));
     }
 
     @Override

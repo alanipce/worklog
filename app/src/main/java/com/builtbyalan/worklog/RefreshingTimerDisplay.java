@@ -9,7 +9,7 @@ import java.lang.ref.WeakReference;
 
 // binds the timer to textview and updates it at a set refresh rate
 // requires explicit instruction to continue refreshing
-public abstract class RefreshingTimerDisplay {
+public class RefreshingTimerDisplay {
     private Timer mTimer;
     private TextView mDisplayTextView;
     private long mRefreshInterval; // in milliseconds
@@ -17,6 +17,10 @@ public abstract class RefreshingTimerDisplay {
     private DateManager mDateFormatter;
 
     private static final int MSG = 1;
+
+    RefreshingTimerDisplay() {
+        this(null, null);
+    }
 
     RefreshingTimerDisplay(Timer timer, TextView displayTextView) {
         mTimer = timer;
@@ -26,18 +30,26 @@ public abstract class RefreshingTimerDisplay {
         mRefreshInterval = 60000; // once per minute
     }
 
+    public void beginUpdating(Timer timer, TextView displayTextView) {
+        mTimer = timer;
+        mDisplayTextView = displayTextView;
+
+        beginUpdating();
+    }
+
     public void beginUpdating() {
+        if (mTimer == null || mDisplayTextView == null) {
+            return;
+        }
+
         mHandler.sendMessage(mHandler.obtainMessage(MSG));
     }
 
-    public abstract boolean onUpdate(long timeElapsed);
 
-    private boolean updateDisplay() {
+    private void updateDisplay() {
         String formattedElapsedTime = mDateFormatter.formatElapsedTime(mTimer.getTimeElapsed());
 
         mDisplayTextView.setText(formattedElapsedTime);
-
-        return onUpdate(mTimer.getTimeElapsed());
     }
 
     private static class RefreshHandler extends Handler {
@@ -55,22 +67,9 @@ public abstract class RefreshingTimerDisplay {
                 return;
             }
 
-            long lastUpdateStart = SystemClock.elapsedRealtime();
-            boolean continueUpdates = timerDisplay.updateDisplay();
-            long lastUpdateDuration = SystemClock.elapsedRealtime() - lastUpdateStart;
+            timerDisplay.updateDisplay();
 
-
-            if (continueUpdates) {
-                long refreshInterval = timerDisplay.mRefreshInterval;
-                long delay = refreshInterval - lastUpdateDuration;
-
-                // special case where onTick takes one or more intervals to complete, will result in skipping
-                // missed intervals
-                while (delay < 0) delay += refreshInterval;
-
-                sendMessageDelayed(obtainMessage(MSG), delay);
-            }
-
+            sendMessageDelayed(obtainMessage(MSG), timerDisplay.mRefreshInterval);
         }
     }
 }

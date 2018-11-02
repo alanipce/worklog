@@ -11,6 +11,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -23,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.luizgrp.sectionedrecyclerviewadapter.Section;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
@@ -35,9 +38,11 @@ public class ProjectSummaryActivity extends AppCompatActivity {
 
     private List<WorkEntry> mWorkEntries;
     private Project mCurrentProject;
+    private Timer mProjectTimer;
 
     private RecyclerView mRecyclerView;
     private SectionedRecyclerViewAdapter mSectionedAdapter;
+    private Section mProjectTimerSection;
 
 
     private DateManager mDateManager = new DateManager();
@@ -59,6 +64,9 @@ public class ProjectSummaryActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mSectionedAdapter = new SectionedRecyclerViewAdapter();
+        mProjectTimerSection = new ProjectTimerSection();
+
+        mSectionedAdapter.addSection(mProjectTimerSection);
         mSectionedAdapter.addSection(new WorkEntrySection());
 
         mRecyclerView = findViewById(R.id.recyclerview_work_entry_list);
@@ -92,6 +100,24 @@ public class ProjectSummaryActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void startTimer() {
+        if (mProjectTimer == null) {
+            mProjectTimer = new Timer();
+        }
+
+        mProjectTimer.start();
+        mSectionedAdapter.notifyItemChangedInSection(mProjectTimerSection, 0);
+
+        Log.d(TAG, "Starting new timer...");
+    }
+
+    private void stopTimer() {
+        mProjectTimer.stop();
+
+        Log.d(TAG, "Stopping timer with final time elapsed of: " + mProjectTimer.getTimeElapsed());
+        // send data to the correct method
+    }
+
     private void logNewWorkEntry() {
         Intent logWorkEntryIntent = new Intent(ProjectSummaryActivity.this, LogWorkEntryActivity.class);
         logWorkEntryIntent.putExtra(LogWorkEntryActivity.EXTRA_PROJECT_FIREBASE_KEY, mCurrentProject.getIdentifier());
@@ -119,6 +145,62 @@ public class ProjectSummaryActivity extends AppCompatActivity {
         }
     };
 
+    class ProjectTimerSection extends StatelessSection {
+        private RefreshingTimerDisplay mRefreshingTimerDisplay;
+
+        ProjectTimerSection() {
+            super(SectionParameters.builder()
+                    .itemResourceId(R.layout.item_project_timer)
+                    .build());
+
+            mRefreshingTimerDisplay = new RefreshingTimerDisplay();
+        }
+
+        @Override
+        public int getContentItemsTotal() {
+            return 1;
+        }
+
+        @Override
+        public RecyclerView.ViewHolder getItemViewHolder(View view) {
+            return new ProjectTimerViewHolder(view);
+        }
+
+        @Override
+        public void onBindItemViewHolder(RecyclerView.ViewHolder holder, final int position) {
+            ProjectTimerViewHolder vh = (ProjectTimerViewHolder) holder;
+
+            if (mProjectTimer == null || mProjectTimer.isIdle()) {
+                vh.timerDisplayTextView.setVisibility(View.INVISIBLE);
+
+                vh.stopTimerButton.setVisibility(View.INVISIBLE);
+                vh.stopTimerButton.setOnClickListener(null);
+
+                vh.startTimerButton.setVisibility(View.VISIBLE);
+                vh.startTimerButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startTimer();
+                    }
+                });
+            } else {
+                mRefreshingTimerDisplay.beginUpdating(mProjectTimer, vh.timerDisplayTextView);
+
+                vh.timerDisplayTextView.setVisibility(View.VISIBLE);
+
+                vh.stopTimerButton.setVisibility(View.VISIBLE);
+                vh.stopTimerButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        stopTimer();
+                    }
+                });
+
+                vh.startTimerButton.setVisibility(View.INVISIBLE);
+                vh.startTimerButton.setOnClickListener(null);
+            }
+        }
+    }
 
     class WorkEntrySection extends StatelessSection {
 
@@ -167,6 +249,24 @@ public class ProjectSummaryActivity extends AppCompatActivity {
                 }
             });
 
+        }
+    }
+
+    private class ProjectTimerViewHolder extends RecyclerView.ViewHolder {
+        TextView titleTextView;
+        EditText taskTitleTextView;
+        TextView timerDisplayTextView;
+        Button startTimerButton;
+        Button stopTimerButton;
+
+        ProjectTimerViewHolder(View itemView) {
+            super(itemView);
+
+            titleTextView = itemView.findViewById(R.id.text_project_timer_title);
+            taskTitleTextView = itemView.findViewById(R.id.edittext_project_timer_task);
+            timerDisplayTextView = itemView.findViewById(R.id.text_project_timer_display);
+            startTimerButton = itemView.findViewById(R.id.button_project_timer_start);
+            stopTimerButton = itemView.findViewById(R.id.button_project_timer_stop);
         }
     }
 

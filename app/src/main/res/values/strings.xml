@@ -16,4 +16,6 @@
     <string name="all_update_button_label">Change</string>
     <string name="add_work_entry_endtime_label">End Time</string>
     <string name="add_work_entry_starttime_label">Start Time</string>
+    <string name="project_timer_title">Timer</string>
+    <string name="project_timer_task_hint">What are you working on?</string>
 </resources>

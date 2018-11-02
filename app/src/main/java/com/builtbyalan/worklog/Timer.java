@@ -40,4 +40,12 @@ public class Timer {
 
         return relativeToTimestamp - mStartTimestamp;
     }
+
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+    public boolean isIdle() {
+        return !isRunning;
+    }
 }
