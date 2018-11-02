@@ -23,6 +23,7 @@
         <activity android:name=".LogWorkEntryActivity"
             android:label="@string/add_work_entry_activity_title"
             android:parentActivityName=".ProjectSummaryActivity"/>
+        <activity android:name=".FakeTimerActivity" />
     </application>
 
 </manifest>
