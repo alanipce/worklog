@@ -43,8 +43,7 @@ public class ProjectSummaryActivity extends AppCompatActivity {
 
     private List<WorkEntry> mWorkEntries;
     private Project mCurrentProject;
-    private Timer mProjectTimer;
-    private String mProjectTimerTaskName;
+    private TaskTimer mProjectTimer;
 
     private RecyclerView mRecyclerView;
     private ViewGroup mContainerView;
@@ -86,6 +85,15 @@ public class ProjectSummaryActivity extends AppCompatActivity {
         super.onStart();
 
         mWorkEntriesQuery.addValueEventListener(mOnChangeWorkEntriesEventListener);
+
+        TaskTimer runningTimer = ActiveTaskTimerTracker.getInstance(this).getTimer(mCurrentProject.getIdentifier());
+
+        if (runningTimer == null) {
+            mProjectTimer = new TaskTimer();
+        } else {
+            mProjectTimer = runningTimer;
+            runningTimer.resume();
+        }
     }
 
     @Override
@@ -93,6 +101,10 @@ public class ProjectSummaryActivity extends AppCompatActivity {
         super.onStop();
 
         mWorkEntriesQuery.removeEventListener(mOnChangeWorkEntriesEventListener);
+
+        if (mProjectTimer.isRunning()) {
+            ActiveTaskTimerTracker.getInstance(this).trackTimer(mProjectTimer, mCurrentProject.getIdentifier());
+        }
     }
 
     @Override
@@ -108,10 +120,6 @@ public class ProjectSummaryActivity extends AppCompatActivity {
     }
 
     private void startTimer() {
-        if (mProjectTimer == null) {
-            mProjectTimer = new Timer();
-        }
-
         mProjectTimer.start();
         mSectionedAdapter.notifyItemChangedInSection(mProjectTimerSection, 0);
 
@@ -119,12 +127,15 @@ public class ProjectSummaryActivity extends AppCompatActivity {
     }
 
     private void stopTimer() {
+        mProjectTimer.stop();
         Log.d(TAG, "Stopping timer with final time elapsed of: " + mProjectTimer.getTimeElapsed());
-        logNewWorkEntry(mProjectTimerTaskName, mProjectTimer.getTimeElapsed());
+        logNewWorkEntry(mProjectTimer.getTaskName(), mProjectTimer.getTimeElapsed());
+
+        // clear from active timer tracker if necessary
+        ActiveTaskTimerTracker.getInstance(this).removeTimer(mCurrentProject.getIdentifier());
 
         // "reset" the project timer
-        mProjectTimer.stop();
-        mProjectTimerTaskName = "";
+        mProjectTimer.reset();
         mContainerView.requestFocus(); // remove focus
         mSectionedAdapter.notifyItemChangedInSection(mProjectTimerSection, 0);
     }
@@ -198,9 +209,11 @@ public class ProjectSummaryActivity extends AppCompatActivity {
         public void onBindItemViewHolder(RecyclerView.ViewHolder holder, final int position) {
             ProjectTimerViewHolder vh = (ProjectTimerViewHolder) holder;
 
-            vh.taskTitleEditText.setText(mProjectTimerTaskName);
+            // initialize the task displayed in timer
+            vh.taskTitleEditText.setText(mProjectTimer.getTaskName());
 
-            if (mProjectTimer == null || mProjectTimer.isIdle()) {
+            // handle stopped and started states of list item
+            if (mProjectTimer.isIdle()) {
                 vh.timerDisplayTextView.setVisibility(View.INVISIBLE);
 
                 vh.stopTimerButton.setVisibility(View.INVISIBLE);
@@ -309,7 +322,7 @@ public class ProjectSummaryActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mProjectTimerTaskName = s.toString();
+                mProjectTimer.setTaskName(s.toString());
             }
 
             @Override

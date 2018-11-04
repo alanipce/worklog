@@ -9,7 +9,7 @@ import java.lang.ref.WeakReference;
 // binds the timer to textview and updates it at a set refresh rate
 // requires explicit instruction to continue refreshing
 public class RefreshingTimerDisplay {
-    private Timer mTimer;
+    private TaskTimer mTimer;
     private TextView mDisplayTextView;
     private long mRefreshInterval; // in milliseconds
     private Handler mHandler;
@@ -21,7 +21,7 @@ public class RefreshingTimerDisplay {
         this(null, null);
     }
 
-    RefreshingTimerDisplay(Timer timer, TextView displayTextView) {
+    RefreshingTimerDisplay(TaskTimer timer, TextView displayTextView) {
         mTimer = timer;
         mDisplayTextView = displayTextView;
         mHandler = new RefreshHandler(this);
@@ -29,7 +29,7 @@ public class RefreshingTimerDisplay {
         mRefreshInterval = 1000;
     }
 
-    public void beginUpdating(Timer timer, TextView displayTextView) {
+    public void beginUpdating(TaskTimer timer, TextView displayTextView) {
         mTimer = timer;
         mDisplayTextView = displayTextView;
 
