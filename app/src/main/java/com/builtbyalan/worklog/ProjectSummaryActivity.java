@@ -13,6 +13,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -46,6 +47,7 @@ public class ProjectSummaryActivity extends AppCompatActivity {
     private String mProjectTimerTaskName;
 
     private RecyclerView mRecyclerView;
+    private ViewGroup mContainerView;
     private SectionedRecyclerViewAdapter mSectionedAdapter;
     private Section mProjectTimerSection;
 
@@ -73,7 +75,8 @@ public class ProjectSummaryActivity extends AppCompatActivity {
         mSectionedAdapter.addSection(mProjectTimerSection);
         mSectionedAdapter.addSection(new WorkEntrySection());
 
-        mRecyclerView = findViewById(R.id.recyclerview_work_entry_list);
+        mContainerView = findViewById(R.id.layout_project_summary_container);
+        mRecyclerView = mContainerView.findViewById(R.id.recyclerview_work_entry_list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         mRecyclerView.setAdapter(mSectionedAdapter);
     }
@@ -116,10 +119,14 @@ public class ProjectSummaryActivity extends AppCompatActivity {
     }
 
     private void stopTimer() {
-        mProjectTimer.stop();
-
         Log.d(TAG, "Stopping timer with final time elapsed of: " + mProjectTimer.getTimeElapsed());
         logNewWorkEntry(mProjectTimerTaskName, mProjectTimer.getTimeElapsed());
+
+        // "reset" the project timer
+        mProjectTimer.stop();
+        mProjectTimerTaskName = "";
+        mContainerView.requestFocus(); // remove focus
+        mSectionedAdapter.notifyItemChangedInSection(mProjectTimerSection, 0);
     }
 
     private void logNewWorkEntry(String taskName, long timeWorked) {
