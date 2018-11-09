@@ -3,13 +3,13 @@ package com.builtbyalan.worklog;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-public class ActiveTaskTimerTracker {
-    private static ActiveTaskTimerTracker mInstance;
+public class TimerTracker {
+    private static TimerTracker mInstance;
     public static final String PREFERENCES_FILENAME = "worklog.timertracker.sharedpreferences";
 
     private Context mContext;
 
-    public ActiveTaskTimerTracker(Context context) {
+    public TimerTracker(Context context) {
         mContext = context;
     }
 
@@ -42,9 +42,9 @@ public class ActiveTaskTimerTracker {
     }
 
     // convenience method for using shared instance across app
-    public static ActiveTaskTimerTracker getInstance(Context context) {
+    public static TimerTracker getInstance(Context context) {
         if (mInstance == null) {
-            mInstance = new ActiveTaskTimerTracker(context);
+            mInstance = new TimerTracker(context);
         }
 
         return mInstance;

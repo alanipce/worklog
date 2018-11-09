@@ -17,9 +17,11 @@ public class TaskTimer {
     private boolean mIsRunning;
 
     TaskTimer() {
+        long now = SystemClock.elapsedRealtime();
+
         mTaskName = "";
-        mStartTimestamp = 0;
-        mStopTimestamp  = 0;
+        mStartTimestamp = now;
+        mStopTimestamp  = now;
         mIsRunning = false;
     }
 

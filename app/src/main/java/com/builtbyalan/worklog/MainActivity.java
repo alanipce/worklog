@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -22,9 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
@@ -153,31 +150,49 @@ public class MainActivity extends AppCompatActivity implements AddProjectDialogF
         @Override
         public void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position) {
             ProjectViewHolder vh = (ProjectViewHolder) holder;
-            final Project project = mProjects.get(position);
+            Project project = mProjects.get(position);
 
-            vh.mTitleTextView.setText(project.getTitle());
-            vh.mDescriptionTextView.setText(project.getDescription());
-            vh.mContainerView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    handleProjectClick(project);
-                }
-            });
+            vh.bind(project);
         }
     }
 
     class ProjectViewHolder extends RecyclerView.ViewHolder {
         TextView mTitleTextView;
         TextView mDescriptionTextView;
+        TextView mTimerTextView;
         ViewGroup mContainerView;
+
+        private StopWatch mStopWatch;
 
         ProjectViewHolder(View itemView) {
             super(itemView);
 
             mContainerView = itemView.findViewById(R.id.layout_project_entry_container);
             mTitleTextView = mContainerView.findViewById(R.id.text_project_entry_title);
+            mTimerTextView = mContainerView.findViewById(R.id.text_project_entry_timer);
             mDescriptionTextView = mContainerView.findViewById(R.id.text_project_entry_description);
         }
+
+        private void bind(final Project project) {
+            mTitleTextView.setText(project.getTitle());
+            mDescriptionTextView.setText(project.getDescription());
+            mContainerView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    handleProjectClick(project);
+                }
+            });
+
+
+            mStopWatch = TimerUtils.getActiveStopWatch(MainActivity.this, project);
+
+            if (mStopWatch == null) {
+                mTimerTextView.setText("");
+            } else {
+                mStopWatch.setDisplay(mTimerTextView);
+            }
+        }
+
     }
 
 }

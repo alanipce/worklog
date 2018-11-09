@@ -86,16 +86,13 @@ public class ProjectSummaryActivity extends AppCompatActivity {
 
         mWorkEntriesQuery.addValueEventListener(mOnChangeWorkEntriesEventListener);
 
-        TaskTimer timer = ActiveTaskTimerTracker.getInstance(this).getTimer(mCurrentProject.getIdentifier());
+        StopWatch activeStopWatch = TimerUtils.getActiveStopWatch(this, mCurrentProject);
 
-        if (timer == null) {
-            timer = new TaskTimer();
+        if (activeStopWatch == null) {
+            mProjectStopWatch = new StopWatch(new TaskTimer());
         } else {
-            // is active timer was stored then resume it
-            timer.resume();
+            mProjectStopWatch = activeStopWatch;
         }
-
-        mProjectStopWatch = new StopWatch(timer);
     }
 
     @Override
@@ -104,9 +101,7 @@ public class ProjectSummaryActivity extends AppCompatActivity {
 
         mWorkEntriesQuery.removeEventListener(mOnChangeWorkEntriesEventListener);
 
-        if (mProjectStopWatch.isTimerRunning()) {
-            ActiveTaskTimerTracker.getInstance(this).trackTimer(mProjectStopWatch.getTimer(), mCurrentProject.getIdentifier());
-        }
+        TimerUtils.storeStopWatchIfNecessary(this, mProjectStopWatch, mCurrentProject);
     }
 
     @Override
@@ -133,8 +128,7 @@ public class ProjectSummaryActivity extends AppCompatActivity {
         Log.d(TAG, "Stopping timer with final time elapsed of: " + mProjectStopWatch.getTimeElapsed());
         logNewWorkEntry(mProjectStopWatch.getTimerName(), mProjectStopWatch.getTimeElapsed());
 
-        // clear from active timer tracker if necessary
-        ActiveTaskTimerTracker.getInstance(this).removeTimer(mCurrentProject.getIdentifier());
+        TimerUtils.clearStopWatch(this, mCurrentProject);
 
         // "reset" the project timer
         mProjectStopWatch.resetTimer();
