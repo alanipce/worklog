@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="main_header_height">250dp</dimen>
+    <dimen name="margin_fab">25dp</dimen>
+</resources>

@@ -3,10 +3,12 @@ package com.builtbyalan.worklog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutManager;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +50,17 @@ public class MainActivity extends AppCompatActivity implements AddProjectDialogF
         setContentView(R.layout.activity_main);
 
         mProjects = new ArrayList<>();
+
+        Toolbar toolbar = findViewById(R.id.toolbar_main);
+        setSupportActionBar(toolbar);
+
+        FloatingActionButton fab = findViewById(R.id.fab_main_add_project);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddProjectDialog();
+            }
+        });
 
         mRecyclerView = findViewById(R.id.recyclerview_projects_list);
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -123,7 +136,6 @@ public class MainActivity extends AppCompatActivity implements AddProjectDialogF
     class ProjectSection extends StatelessSection {
         ProjectSection() {
             super(SectionParameters.builder()
-                    .headerResourceId(R.layout.item_action_header)
                     .itemResourceId(R.layout.item_project_entry)
                     .build());
         }
@@ -149,24 +161,6 @@ public class MainActivity extends AppCompatActivity implements AddProjectDialogF
                 @Override
                 public void onClick(View v) {
                     handleProjectClick(project);
-                }
-            });
-        }
-
-        @Override
-        public RecyclerView.ViewHolder getHeaderViewHolder(View view) {
-            return new ActionHeaderViewHolder(view);
-        }
-
-        @Override
-        public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
-            ActionHeaderViewHolder vh = (ActionHeaderViewHolder) holder;
-            vh.mTitleTextView.setText("Projects");
-            vh.mActionButton.setText("Add Project");
-            vh.mActionButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showAddProjectDialog();
                 }
             });
         }
